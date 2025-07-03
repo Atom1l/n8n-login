@@ -14,10 +14,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#3c3c45] flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+          <p className="mt-4 text-white">Loading...</p>
         </div>
       </div>
     );
@@ -26,9 +26,9 @@ function App() {
   // If user is authenticated, show a brief redirect message
   if (user) {
     return (
-      <div className="min-h-screen bg-[#2d2e2e] flex items-center justify-center">
+      <div className="min-h-screen bg-[#3c3c45] flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
           <p className="mt-4 text-white">Redirecting to n8n workflow...</p>
         </div>
       </div>
