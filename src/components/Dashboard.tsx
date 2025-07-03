@@ -14,7 +14,7 @@ const Dashboard = () => {
   };
 
   const redirectToN8n = () => {
-    window.location.href = 'http://localhost:5678';
+    window.location.href = 'http://localhost:5678/workflow/3itcopY4xzxL7s0z';
   };
 
   return (
