@@ -1,21 +1,54 @@
 import React, { useState } from 'react';
-import { Mail, Shield, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Shield, ArrowRight, Loader2, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const LoginPage = () => {
-  const { signInWithGoogle, loading, error } = useAuth();
+  const { signInWithGoogle, loading, error, user, redirectToN8n } = useAuth();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleGoogleSignIn = async () => {
     try {
       setIsSigningIn(true);
-      await signInWithGoogle();
+      await signInWithGoogle(rememberMe);
     } catch (error) {
       console.error('Sign in failed:', error);
     } finally {
       setIsSigningIn(false);
     }
   };
+
+  // If user is logged in but didn't choose to be remembered, show manual redirect option
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <div className="w-full max-w-md">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl mb-6">
+                <Check className="w-8 h-8 text-white" />
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Login Successful!
+              </h2>
+              <p className="text-gray-600 mb-8">
+                You are now authenticated. Click below to access your n8n workflow.
+              </p>
+              
+              <button
+                onClick={redirectToN8n}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3"
+              >
+                Continue to n8n Workflow
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -42,6 +75,32 @@ const LoginPage = () => {
                 <p className="text-red-600 text-sm">{error}</p>
               </div>
             )}
+
+            {/* Remember Me Checkbox */}
+            <div className="mb-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 rounded border-2 transition-all duration-200 ${
+                    rememberMe 
+                      ? 'bg-blue-600 border-blue-600' 
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}>
+                    {rememberMe && (
+                      <Check className="w-3 h-3 text-white absolute top-0.5 left-0.5" />
+                    )}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-700">
+                  Remember me (auto-login next time)
+                </span>
+              </label>
+            </div>
 
             {/* Google Sign In Button */}
             <button
@@ -78,7 +137,7 @@ const LoginPage = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Seamless workspace integration</span>
+                  <span className="text-sm text-gray-600">Optional auto-login for convenience</span>
                 </div>
               </div>
             </div>
