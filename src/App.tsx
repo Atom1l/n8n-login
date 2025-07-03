@@ -3,14 +3,14 @@ import { useAuth } from './hooks/useAuth';
 import LoginPage from './components/LoginPage';
 
 function App() {
-  const { user, loading, shouldRememberUser } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (user && !loading && shouldRememberUser) {
-      // Only redirect automatically if user chose to be remembered
+    if (user && !loading) {
+      // Redirect to n8n workflow immediately after successful login
       window.location.href = 'http://localhost:5678/workflow/3itcopY4xzxL7s0z';
     }
-  }, [user, loading, shouldRememberUser]);
+  }, [user, loading]);
 
   if (loading) {
     return (
@@ -23,8 +23,8 @@ function App() {
     );
   }
 
-  // If user is authenticated and should be remembered, show redirect message
-  if (user && shouldRememberUser) {
+  // If user is authenticated, show a brief redirect message
+  if (user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
@@ -38,4 +38,4 @@ function App() {
   return <LoginPage />;
 }
 
-export default App
+export default App;
