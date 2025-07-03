@@ -18,40 +18,44 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#2d2e2e]">
       <div className="flex items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-md">
           {/* Logo and Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 mb-6">
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center justify-center w-40 h-40 mb-6 overflow-hidden rounded-full">
               <img 
                 src="/src/assets/botnoi.svg" 
                 alt="Botnoi Logo" 
-                className="w-20 h-20 rounded-2xl shadow-lg"
+                className="w-30 h-30"
               />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Welcome to n8n
+            <h1 className="text-3xl font-bold text-gray-200 mb-2">
+              Welcome Back!
             </h1>
-            <p className="text-gray-600">
-              Sign in to access your automation workspace
+            <p className="text-gray-500">
+              Sign in to access your n8n workspaces.
             </p>
           </div>
+          {/* Error Message */}
+          {error && (
+            <div className="p-2 flex items-center justify-center mb-3">
+              <span>
+                {/* You can use an error icon from lucide-react or another icon library */}
+                <svg className="w-7 h-7 inline text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                </svg>
+              </span>
+              <span className="text-red-600 text-md">Invalid Login.</span>
+            </div>
+          )}
 
-          {/* Login Card */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-            {/* Error Message */}
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm">{error}</p>
-              </div>
-            )}
-
-            {/* Google Sign In Button */}
+          {/* Google Sign In Button */}
+          <div className='flex justify-center'>
             <button
               onClick={handleGoogleSignIn}
               disabled={loading || isSigningIn}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-6 rounded-lg border border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-6 rounded-lg border border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed group"
             >
               {isSigningIn ? (
                 <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
@@ -69,20 +73,6 @@ const LoginPage = () => {
                 </>
               )}
             </button>
-
-            {/* Divider */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <p className="text-center text-sm text-gray-500">
-                Secure authentication powered by Firebase
-              </p>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-8 text-sm text-gray-500">
-            <p>
-              By signing in, you agree to our Terms of Service and Privacy Policy
-            </p>
           </div>
         </div>
       </div>
