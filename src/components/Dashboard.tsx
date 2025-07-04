@@ -1,7 +1,6 @@
 import React from 'react';
 import { LogOut, User, ExternalLink, Workflow } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import ApiKeySection from './ApiKeySection';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -9,8 +8,6 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      // Clear API data on logout
-      localStorage.removeItem('botnoi_api_data');
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -67,11 +64,6 @@ const Dashboard = () => {
               <p className="text-gray-600">{user?.email}</p>
             </div>
           </div>
-        </div>
-
-        {/* API Key Section */}
-        <div className="mb-6">
-          <ApiKeySection />
         </div>
 
         {/* n8n Access Card */}
