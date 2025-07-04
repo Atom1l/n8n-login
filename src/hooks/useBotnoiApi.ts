@@ -1,31 +1,25 @@
 import { useState, useEffect } from 'react';
-import { BotnoiApiService, BotnoiApiResponse } from '../services/botnoiApi';
-import { useAuth } from './useAuth';
+import { BotnoiApiService, BotnoiApiResponse, BotnoiLoginCredentials } from '../services/botnoiApi';
 
 export const useBotnoiApi = () => {
-  const { user } = useAuth();
   const [apiData, setApiData] = useState<BotnoiApiResponse['data'] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [botnoiCredentials, setBotnoiCredentials] = useState<BotnoiLoginCredentials | null>(null);
 
-  const fetchApiKey = async () => {
-    if (!user) {
-      setError('User not authenticated');
-      return;
-    }
-
+  const fetchApiKeyWithLogin = async (credentials: BotnoiLoginCredentials) => {
     try {
       setLoading(true);
       setError(null);
       
-      // Get the user's Firebase token
-      const token = await user.getIdToken();
-      const response = await BotnoiApiService.fetchApiKey(token);
+      const response = await BotnoiApiService.getApiKeyComplete(credentials);
       
       if (response.success && response.data) {
         setApiData(response.data);
+        setBotnoiCredentials(credentials);
         // Store in localStorage for persistence
         localStorage.setItem('botnoi_api_data', JSON.stringify(response.data));
+        localStorage.setItem('botnoi_credentials', JSON.stringify(credentials));
       } else {
         setError(response.error || 'Failed to fetch API key');
       }
@@ -36,15 +30,35 @@ export const useBotnoiApi = () => {
     }
   };
 
+  const refreshApiKey = async () => {
+    if (!botnoiCredentials) {
+      setError('No stored credentials found');
+      return;
+    }
+
+    await fetchApiKeyWithLogin(botnoiCredentials);
+  };
+
   // Load from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('botnoi_api_data');
-    if (stored) {
+    const storedApiData = localStorage.getItem('botnoi_api_data');
+    const storedCredentials = localStorage.getItem('botnoi_credentials');
+    
+    if (storedApiData) {
       try {
-        setApiData(JSON.parse(stored));
+        setApiData(JSON.parse(storedApiData));
       } catch (error) {
         console.error('Failed to parse stored API data:', error);
         localStorage.removeItem('botnoi_api_data');
+      }
+    }
+
+    if (storedCredentials) {
+      try {
+        setBotnoiCredentials(JSON.parse(storedCredentials));
+      } catch (error) {
+        console.error('Failed to parse stored credentials:', error);
+        localStorage.removeItem('botnoi_credentials');
       }
     }
   }, []);
@@ -52,15 +66,19 @@ export const useBotnoiApi = () => {
   const clearApiData = () => {
     setApiData(null);
     setError(null);
+    setBotnoiCredentials(null);
     localStorage.removeItem('botnoi_api_data');
+    localStorage.removeItem('botnoi_credentials');
   };
 
   return {
     apiData,
     loading,
     error,
-    fetchApiKey,
+    fetchApiKeyWithLogin,
+    refreshApiKey,
     clearApiData,
-    hasApiKey: !!apiData?.apiKey
+    hasApiKey: !!apiData?.apiKey,
+    hasStoredCredentials: !!botnoiCredentials
   };
 };
